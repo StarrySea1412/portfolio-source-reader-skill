@@ -1,0 +1,3 @@
+# Personal source maps do not belong in the public skill checkout.
+/SOURCES.md
+__pycache__/

@@ -1,0 +1,8 @@
+{
+  "claims": [
+    {"id":"sequential-pass","verdict":"supported","evidence":[{"path":"allowed/runs/local-r3.md","lines":[3,5]}],"reason":"demo-r3 的本地隔离测试对同一集合中的同一条目连续审批两次，依次返回 approved 和 already_approved，最终集合大小为 1。该记录只验证顺序调用。"},
+    {"id":"concurrent-pass","verdict":"unverified","evidence":[{"path":"allowed/runs/local-r3.md","lines":[3,6]},{"path":"allowed/src/approve.py","lines":[1,8]}],"reason":"demo-r3 的本地记录明确未做并发验证。源码将集合检查和写入分为两步，未展示跨进程共享状态或原子去重机制，因此不能据此确认多进程审批不会重复。"},
+    {"id":"sole-owner","verdict":"unverified","evidence":[{"path":"allowed/archive/team-summary.md","lines":[3,3]}],"reason":"交接说明只将审批防重归于团队，未列出个人贡献或关联 PR，也未建立个人与 demo-r3 的交付关系。现有授权资料不足以写成个人独立交付。"}
+  ],
+  "exercise":"在隔离测试环境中，待审批实现接入跨进程共享的持久化存储后，让多个独立进程通过同步屏障同时审批同一未审批条目；每轮使用新条目并重复多轮。通过条件：每轮恰好一次返回 approved，其余均返回 already_approved，回读存储确认只有一次有效审批；若有下游副作用，也只发生一次。"
+}

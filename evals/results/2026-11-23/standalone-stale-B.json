@@ -1,0 +1,8 @@
+{
+  "claims": [
+    {"id":"current-auto-resend","verdict":"contradicted","evidence":[{"path":"README.md","lines":[3,3]},{"path":"delivery.py","lines":[4,10]},{"path":"test_delivery.py","lines":[12,21]}],"reason":"r2 的单进程实现只调用一次 send；捕获 TimeoutError 后直接返回，不会自动重发。单测源码也明确断言只发送一次，但本轮未运行测试。"},
+    {"id":"current-pending","verdict":"supported","evidence":[{"path":"README.md","lines":[3,3]},{"path":"delivery.py","lines":[4,10]},{"path":"test_delivery.py","lines":[12,21]}],"reason":"r2 的 send 抛出 TimeoutError 时，submit 返回 status 为 pending_confirmation、receipt 为 null 的结果。这是源码可确认的行为，不代表已查明远端是否收件，也不是运行验证。"},
+    {"id":"historical-production","verdict":"unverified","evidence":[{"path":"notes/r1-case-study.md","lines":[1,5]},{"path":"README.md","lines":[3,3]},{"path":".github/workflows/check.yml","lines":[1,8]}],"reason":"r1 档案声称自动重发已通过生产验证，但未附 r1 版本快照、生产验证场景、运行结果或发布记录。现有 CI 文件只是单测配置，不是运行凭据；r2 的实现也不能反驳 r1 的历史主张。"}
+  ],
+  "exercise":"在本地用一个假的 send 模拟「远端已收件，但回执超时」：每次被调用先把同一文档追加到模拟收件列表，再抛出 TimeoutError。对 r2 的 submit 只发起一次调用。通过条件：send 恰好被调用一次，收件列表恰好有一条记录，返回 pending_confirmation 且 receipt 为 null；若出现第二次发送或重复收件，则不通过。"
+}

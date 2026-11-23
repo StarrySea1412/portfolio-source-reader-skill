@@ -1,0 +1,8 @@
+{
+  "claims": [
+    {"id":"ci-configured","verdict":"supported","evidence":[{"path":"README.md","lines":[3,3]},{"path":".github/workflows/check.yml","lines":[2,8]},{"path":"test_delivery.py","lines":[6,21]}],"reason":"r2 快照中的工作流配置为在推送和拉取请求时运行 unittest，仓库也包含两条单元测试。这证明 CI 已配置，不证明它实际运行或通过。"},
+    {"id":"ci-green","verdict":"unverified","evidence":[{"path":"README.md","lines":[3,3]}],"reason":"资料没有与 r2 对应的 CI 运行记录。缺少记录既不能证明通过，也不能证明失败。"},
+    {"id":"r2-deployed","verdict":"unverified","evidence":[{"path":"README.md","lines":[3,3]},{"path":"notes/r1-case-study.md","lines":[1,5]}],"reason":"资料没有 r2 的上线记录或业务验收回执。归档说明针对 r1，且未附发布记录，不能用来证明 r2 已上线并完成验收。"}
+  ],
+  "exercise":"获准后，调取一份与 r2 提交 SHA 对应的 CI 运行回执。通过条件：回执包含运行 ID 和匹配的 SHA，工作流结论为成功，且 unit 作业日志显示两条单元测试实际执行并均通过。这只补证 CI 通过，不证明上线或业务验收。"
+}

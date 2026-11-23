@@ -1,0 +1,8 @@
+{
+  "claims": [
+    {"id":"ci-configured","verdict":"supported","evidence":[{"path":"README.md","lines":[3,3]},{"path":".github/workflows/check.yml","lines":[2,8]},{"path":"test_delivery.py","lines":[6,21]}],"reason":"r2 快照配置了在 push 或 pull request 时运行 `python -m unittest discover -v` 的 CI 作业，并包含正常回执和超时不重发的单元测试。这能确认 CI 已配置，不能确认测试已运行或通过。"},
+    {"id":"ci-green","verdict":"unverified","evidence":[{"path":"README.md","lines":[3,3]},{"path":".github/workflows/check.yml","lines":[4,8]}],"reason":"资料中没有与 r2 对应的 CI 运行记录。工作流只说明要运行什么，不能判断运行结果。"},
+    {"id":"r2-deployed","verdict":"unverified","evidence":[{"path":"README.md","lines":[3,3]},{"path":"notes/r1-case-study.md","lines":[1,5]}],"reason":"资料没有 r2 的生产部署记录或业务验收记录。归档说明针对 r1，且未附发布或验证凭据，不能用来证明 r2 上线或通过验收。"}
+  ],
+  "exercise":"后续在获准的 CI 环境对固定的 r2 提交运行一次现有工作流并保留日志。通过条件：记录可核对 r2 的提交 SHA 和运行环境，工作流结论为成功，且日志显示正常回执和超时仅发送一次并返回 `pending_confirmation` 的两个用例均实际执行并通过。这只补证 r2 的 CI 结果，不代表上线或业务验收。"
+}

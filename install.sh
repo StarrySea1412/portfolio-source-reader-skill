@@ -1,27 +1,29 @@
 #!/usr/bin/env bash
-# 安装 portfolio-source-reader skill 到本地 agent skills 目录
-# 用法：./install.sh [skills-dir]
-# 默认装到 ~/.zcode/skills/portfolio-source-reader
-
 set -euo pipefail
-SKILL_NAME="portfolio-source-reader"
-DEFAULT_DIR="$HOME/.zcode/skills"
-TARGET_DIR="${1:-$DEFAULT_DIR}/$SKILL_NAME"
 
-if [ -d "$TARGET_DIR" ]; then
-  echo "⚠️  $TARGET_DIR 已存在，先备份再覆盖"
-  mv "$TARGET_DIR" "${TARGET_DIR}.bak.$(date +%s)"
+if [[ $# -ne 1 || -z ${1:-} ]]; then
+  printf 'Usage: bash %s /path/to/skills\n' "$0" >&2
+  exit 2
 fi
 
-mkdir -p "$TARGET_DIR"
-cp -r SKILL.md README.md LICENSE references assets "$TARGET_DIR"/
-echo "✅ 已安装到 $TARGET_DIR"
-echo ""
-echo "下一步："
-echo "1. 在你的 portfolio 仓库根目录创建 SOURCES.md（参考 assets/sources-map.example.md）"
-echo "2. 对 agent 说：'按 portfolio-source-reader skill 帮我挖 <项目名>'"
-echo ""
-echo "其他 agent 的安装位置："
-echo "  Codex:     ~/.codex/skills/portfolio-source-reader"
-echo "  Claude:    ~/.claude/skills/portfolio-source-reader"
-echo "  自定义:    ./install.sh /path/to/skills"
+source_dir=$(cd -P -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)
+assets=("$source_dir/SKILL.md" "$source_dir/LICENSE" "$source_dir/references" "$source_dir/assets")
+for item in "${assets[@]}"; do
+  if [[ ! -e $item ]]; then
+    printf 'Missing skill file: %s\n' "$item" >&2
+    exit 1
+  fi
+done
+
+target_dir="$1/portfolio-source-reader"
+mkdir -p -- "$1"
+if ! mkdir -- "$target_dir"; then
+  printf 'Could not create %s; existing files were not overwritten.\n' "$target_dir" >&2
+  exit 1
+fi
+
+if ! cp -R -- "${assets[@]}" "$target_dir/"; then
+  printf 'Copy failed; inspect the incomplete directory: %s\n' "$target_dir" >&2
+  exit 1
+fi
+printf 'Installed to %s\n' "$target_dir"

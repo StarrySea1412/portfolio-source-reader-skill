@@ -1,119 +1,39 @@
-# portfolio-source-reader
+# Portfolio Source Reader
 
-> 给有多源项目（本地 + GitHub + Gitee + 档案）的工程师用的 agent skill：把散落的 项目信息按 STAR 挖出来，产出可直接进简历/档案/面试准备的结构化素材。
->
-> **不是**简历生成器（那是 resume-builder-skill 的事）。**是**素材采集器——回答"AI 怎么知道你到底做了什么"。
+一个面向软件项目的**证据阅读 Skill**：从代码、项目档案和验证记录里，分清实际做了什么、谁做的、验证到哪。默认帮你做个人复盘；也可以按需整理成项目档案、简历素材或面试案例。它不生成 PDF，不替你宣传项目，也不默认运行项目里的代码。
 
-## 这是什么
+## 不填表就能开始
 
-你做过 10+ 个项目，信息散落在：
-- 本地 `c:\project\*`（源码 + docs + git log）
-- GitHub 50 个仓库（公开 README + CI）
-- Gitee 2 个仓库
-- portfolio 14 份 case-study 档案（二手摘要）
+把本仓库里的 `SKILL.md`、`references/` 和 `assets/` 放在你的 Agent 识别的同一个技能目录中，目录名用 `portfolio-source-reader`。如果你的工具不支持安装 Skill，也可以直接把 [`SKILL.md`](SKILL.md) 当作本次任务的参考，并提供需要用到的同目录文件。
 
-通用简历 skill 的问题是：**它不知道你的项目在哪、不知道哪些数字可信、不知道哪些该脱敏**。这个 skill 解决的就是这件事。
-
-## 核心机制
-
-1. **信息源地图（SOURCES.md）**：用户填一张表，告诉 agent"项目→本地路径/git/公开仓库/档案/关键文档"。agent 进来先读这个。
-2. **分层核实**：先读二手档案拿摘要（快），需要细节 cd 到原始项目挖 git log / 代码 / docs（准）。
-3. **STAR 输出**：四要素（S/T/A/R）+ 难点五段（现象→定位→根因→解法→验证），三版格式（简历/档案/面试）。
-4. **铁律**：数字必须数出来、不编造、标边界（独立/协作/AI）、商业脱敏。
-
-## 与同类 skill 的区别
-
-| skill | 挖什么 | 局限 |
-|-------|--------|------|
-| resume-builder-skill | 帮用户把信息做成简历 PDF | 不知道用户项目在哪，靠用户喂内容 |
-| earino/resumasher | 从一个项目文件夹挖证据 | 单源，不支持本地+GitHub+Gitee+档案多源 |
-| **本 skill** | **多源信息地图 + 分层核实** | **需要用户先填 SOURCES.md** |
-
-## 安装
-
-### 方式 1：直接 clone 到 skills 目录
+在 Bash 或 Git Bash 中可用安装脚本。传入 **skills 父目录**，脚本会新建 `portfolio-source-reader/`；已有目标不会被覆盖。
 
 ```bash
-git clone https://github.com/<your-name>/portfolio-source-reader-skill.git ~/.zcode/skills/portfolio-source-reader
-# 或 ~/.codex/skills/、~/.claude/skills/（看你的 agent）
+bash ./install.sh /path/to/skills
 ```
 
-### 方式 2：作为参考文档
+然后给出**一个**仓库或目录，例如：
 
-直接把 `SKILL.md` 和 `references/` 放进你的项目，agent 读 `SKILL.md` 时按里面的工作流走。
+> 用 portfolio-source-reader 复盘当前项目的失败恢复。告诉我代码实际上做了什么、还缺哪一条验证，最后给我一个能亲手做的实验。不写简历。
 
-## 使用
+公开链接、已授权的本地路径或单份档案均可作为起点。拿不到进一步的证据时，输出会标出缺口，而不是编造数字或要求先补填整张表。
 
-### 第 1 步：填信息源地图
+## 多项目再加地图
 
-复制 `references/sources-map-template.md` 到你的 portfolio 仓库根目录，命名为 `SOURCES.md`，按模板填：
+如果同一个项目在多处有资料，或需要反复核对多个项目，再用 [`SOURCES.md` 模板](references/sources-map-template.md) 建一份**受控的私有地图**。地图最少只需项目名和一个允许访问的入口，不必填提交数、测试数或远端链接。 本仓库忽略根目录的 `SOURCES.md`，仅防误提交，不是访问控制。公开仓库里的 [地图样例](assets/sources-map.example.md) 和两份演示资料都是虚构的，可以在这个仓库里试，不要把实际公司项目的路径与非公开资料复制进去。
 
-```markdown
-### hermes-watch（全栈 AI 巡检平台）
-- 本地路径：`c:\project\hermes-watch`
-- Git：69 commits，最后 2026-09-16
-- 公开仓库：https://github.com/you/hermes-watch
-- 档案：`projects/hermes-watch/case-study.md`
-- 关键文档：`backend/app/`、`docs/LLM.md`、`backend/run_tests.py`
-- 挖什么：并发轮换行锁 / 跳板连接池 / metrics 降采样 / 审批制执行
-- ⚠️ 脱敏：否
-```
+| 资料 | 能回答什么 |
+| --- | --- |
+| 档案、地图、提交说明 | 去哪里找、当时计划或记录了什么 |
+| 指定版本的实现与差异 | 代码做了什么、在什么条件下做 |
+| 对应版本和环境的测试、发布或业务记录 | 实际验证了什么；没验证的仍然分开标注 |
 
-填好 `assets/sources-map.example.md` 是填好的样例，可参考。
+例如，找到了一份 CI 配置和 20 个测试函数，最多证明有相关配置和用例，不能写「20 项测试全部通过」。项目实现了某功能，也不能光凭团队代码说是自己主导。更完整的工作示例见 [证据示例](references/examples.md)。
 
-### 第 2 步：触发
+## 跟其他工具的分工
 
-对 agent 说：
-- "按 portfolio-source-reader skill 帮我挖 identity-service 的难点"
-- "帮我写简历，主攻后端"
-- "分析我的项目，准备面试"
+- 跟简历写作或排版工具不冲突：先核实证据，再决定怎么写。
+- 跟单仓库分析不冲突：只有一份来源就读一份；需要时用地图把档案与原始资料连起来。
+- 不声称比其他开源工具更准。维护者可以用 [对照评测](evals/README.md) 验证：用与不用 Skill 时，结论是否更可追溯、缺证时是否更克制。
 
-agent 会自动：
-1. 读 `SOURCES.md` 找项目
-2. 读 `projects/index.md` 拿概览
-3. 按优先级挖（档案→git log→代码→docs）
-4. 按 STAR 输出（简历/档案/面试三选一）
-
-### 第 3 步：输出
-
-agent 产出的素材可直接喂给 resume-builder-skill 或其他简历工具，或自己手改成简历。
-
-## 目录
-
-```
-portfolio-source-reader-skill/
-├── SKILL.md                         # skill 主文件（agent 入口）
-├── README.md                        # 本文件
-├── LICENSE                          # MIT
-├── references/
-│   ├── sources-map-template.md      # 空白信息源地图模板
-│   ├── star-template.md             # STAR 输出模板（三版）
-│   └── examples.md                  # 3 个挖好的样例（已脱敏）
-└── assets/
-    └── sources-map.example.md       # 填好的信息源地图示例
-```
-
-## 设计哲学
-
-1. **事实 > 形容词**：数字必须数出来，不能编。"235 项测试"比"大量测试"值钱。
-2. **分层核实**：档案是摘要，源码是事实源。摘要快、源码准，各司其职。
-3. **诚实边界**：独立/协作/AI 辅助必须标注，这是信任基础。
-4. **脱敏默认**：商业项目默认不写客户/域名/产品名。
-5. **不替代简历工具**：这个 skill 挖素材，resume-builder-skill 排版——分工明确。
-
-## 适用场景
-
-- 有多源项目的工程师（本地 + GitHub + Gitee + 档案）
-- 项目做完没时间写档案，需要 agent 帮挖
-- 准备面试，需要把项目难点系统梳理
-- 写简历，需要带数字的事实弹药
-
-## 不适用
-
-- 单个项目、信息集中（直接用简历工具即可）
-- 与本人项目无关的代码分析
-- 一般性写作
-
-## License
-
-MIT
+[Skill 入口](SKILL.md) · [输出格式](references/star-template.md) · [安装脚本](install.sh) · [MIT 许可证](LICENSE)

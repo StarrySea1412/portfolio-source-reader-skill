@@ -1,0 +1,8 @@
+{
+  "claims": [
+    {"id":"sequential-pass","verdict":"supported","evidence":[{"path":"allowed/runs/local-r3.md","lines":[3,5]}],"reason":"demo-r3 在本地隔离 Python 环境中，用同一集合对同一条目连续审批两次，依次返回 approved 和 already_approved，最终集合大小为 1。该记录只验证了串行场景。"},
+    {"id":"concurrent-pass","verdict":"unverified","evidence":[{"path":"allowed/runs/local-r3.md","lines":[3,6]},{"path":"allowed/src/approve.py","lines":[4,8]}],"reason":"demo-r3 的运行记录明确未做并发验证。源码将检查和添加分开，未体现跨进程共享状态或原子保证，不能据此认定多进程防重已通过。"},
+    {"id":"sole-owner","verdict":"unverified","evidence":[{"path":"allowed/archive/team-summary.md","lines":[3,3]}],"reason":"旧交接只记载团队实现，没有具名个人贡献或关联 PR，无法确认 demo-r3 的审批防重由你独立交付。"}
+  ],
+  "exercise":"在隔离环境做多进程同条目审批练习：让 8 个独立进程从同一屏障起跑，争抢审批共享状态中的同一个未审批条目，重复 100 轮，每轮换一个新条目。通过条件：每轮恰好 1 个进程返回 approved，其余 7 个均返回 already_approved；最终只有一条审批记录，如有审批副作用也只触发一次，且无异常或超时。若 demo-r3 只有进程内集合，记录它不具备该验证条件；接入共享状态后按实际版本记录结果，不算作 demo-r3 通过。"
+}

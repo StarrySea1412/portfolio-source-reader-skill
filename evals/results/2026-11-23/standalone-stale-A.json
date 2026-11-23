@@ -1,0 +1,8 @@
+{
+  "claims": [
+    {"id":"current-auto-resend","verdict":"contradicted","evidence":[{"path":"README.md","lines":[3,3]},{"path":"delivery.py","lines":[4,10]},{"path":"test_delivery.py","lines":[12,21]}],"reason":"当前 r2 的 submit 只调用一次 send；捕获 TimeoutError 后直接返回，不会自动重发。测试源码也断言只调用一次，但本轮未运行测试；结论仅限于该实现。"},
+    {"id":"current-pending","verdict":"supported","evidence":[{"path":"README.md","lines":[3,3]},{"path":"delivery.py","lines":[6,10]},{"path":"test_delivery.py","lines":[12,21]}],"reason":"当前 r2 的 submit 在 send 抛出 TimeoutError 时返回 pending_confirmation，receipt 为 None。这是源码可确认的返回值，不表示远端未接收文档。"},
+    {"id":"historical-production","verdict":"unverified","evidence":[{"path":"notes/r1-case-study.md","lines":[1,5]},{"path":"README.md","lines":[3,3]},{"path":".github/workflows/check.yml","lines":[1,8]}],"reason":"r1 旧档案声称自动重发已在生产验证并发布，但没有附上 r1 源码、验证环境、运行凭据或发布记录。工作流文件只是单元测试配置，不是运行结果，不能证实或反驳该生产结论。"}
+  ],
+  "exercise":"在纸上模拟一次「远端已接收，但回执超时」：第一次调用 send 时，在远端接收清单记下文档 A，然后让 send 抛出 TimeoutError。沿 r2 的 submit 逐行推演，不执行代码。通过条件：send 只被调用一次，清单里只有一条 A，返回 pending_confirmation 且 receipt 为 None；能指出这就是「超时就会自动重发」的反例。"
+}
