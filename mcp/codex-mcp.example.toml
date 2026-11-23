@@ -1,0 +1,4 @@
+# Example only. Replace both absolute paths; use the executable in this venv.
+[mcp_servers.portfolio_evidence]
+command = 'C:\path\to\portfolio-source-reader-skill\mcp\.venv\Scripts\python.exe'
+args = ['-I', '-B', 'C:\path\to\portfolio-source-reader-skill\mcp\evidence_mcp.py']

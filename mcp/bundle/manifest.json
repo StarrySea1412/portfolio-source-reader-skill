@@ -1,0 +1,56 @@
+[
+  {
+    "id": "overview",
+    "kind": "overview",
+    "path": "README.md",
+    "sha256": "35219b00cc23903ac0592e2734632cc3593fc9993cf9d76572f5500d3589083c"
+  },
+  {
+    "id": "view-options",
+    "kind": "implementation",
+    "path": "web/host_view.txt",
+    "sha256": "65614f429f3ade4903f0154b48b2eea42c24f9f847c99ed05ddaae2a0aaa535b"
+  },
+  {
+    "id": "trend-query",
+    "kind": "implementation",
+    "path": "app/trend_query.txt",
+    "sha256": "6c4796d418ce0a0a4030298e5d789d17c8f1a38348e057955cc4fecbb49be984"
+  },
+  {
+    "id": "hourly-job",
+    "kind": "implementation",
+    "path": "app/hourly_job.txt",
+    "sha256": "b6f999ba77588b8cafacf3a1a8016635e3dc63f9596bac3ece5b92afde353dfe"
+  },
+  {
+    "id": "storage",
+    "kind": "implementation",
+    "path": "app/storage.txt",
+    "sha256": "40f2955182d4f84fb710c747126add8842bc31c2052294a44237d38a9a4bfc9c"
+  },
+  {
+    "id": "schedule",
+    "kind": "implementation",
+    "path": "app/schedule.txt",
+    "sha256": "18cb0b322f7d3faa3cf3b7c75704fd9b45ee7c883a14e1529fa5257e65693087"
+  },
+  {
+    "id": "test-source",
+    "kind": "test-source",
+    "path": "tests/hourly_cases.txt",
+    "sha256": "58973c4558916fb5d4ba9ab0875f27002cb4d0060b9adbaf0840ecde8f9533f9"
+  },
+  {
+    "id": "change-note",
+    "kind": "change-note",
+    "path": "archive/hourly_change.md",
+    "sha256": "3e90cece5cb9328a0c7642f786140456a003b54851d87e3081fe24e0639a79ec"
+  },
+  {
+    "id": "ci-config",
+    "kind": "ci-config",
+    "path": "ci/workflow.txt",
+    "sha256": "91835b3594beaa7d40d108ee12cc17d7a9c02af43df9b5f3e6c492d3a31db247"
+  }
+]

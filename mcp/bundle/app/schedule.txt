@@ -1,0 +1,12 @@
+# 当前调度和保留策略（脱敏摘录）
+
+repeat:
+    try:
+        collect_samples()
+        build_hourly_bucket()
+        enforce_retention()
+    except Exception:
+        record_exception()
+    # 进入下一轮
+
+原始采样默认保留 7 天，可配置。小时桶固定以 90 天为清理边界。

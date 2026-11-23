@@ -1,0 +1,10 @@
+# 当前小时聚合（脱敏摘录；略去其他指标）
+
+注释：按完整小时聚合，UPSERT 覆盖写。
+bucket = floor(now / 3600) * 3600 - 3600
+end = bucket + 3600
+if no_valid_samples_in(bucket, end):
+    return
+execute('DELETE FROM hourly WHERE bucket = ?', (bucket,))
+execute('INSERT INTO hourly SELECT series_id, ?, COUNT(*), AVG(cpu) '
+        'FROM samples WHERE ts >= ? AND ts < ? GROUP BY series_id', (bucket, bucket, end))

@@ -1,0 +1,8 @@
+# 当前趋势读取（脱敏摘录；略去其他指标）
+
+cutoff = now - range_min * 60
+if range_min > 3 * 1440:
+    return query('SELECT bucket AS ts, cpu FROM hourly WHERE series_id = ? AND bucket > ? ORDER BY bucket',
+                 series_id, cutoff)
+return query('SELECT ts, cpu FROM samples WHERE series_id = ? AND ts > ? ORDER BY ts',
+             series_id, cutoff)

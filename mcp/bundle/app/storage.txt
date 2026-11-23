@@ -1,0 +1,10 @@
+# 当前数据库定义和写入助手（脱敏摘录）
+
+CREATE TABLE hourly(series_id INTEGER, bucket INTEGER, n INTEGER, cpu REAL);
+CREATE INDEX by_series_bucket ON hourly(series_id, bucket);
+
+def execute(sql, parameters):
+    with lock, connect() as connection:
+        cursor = connection.execute(sql, parameters)
+        connection.commit()
+        return cursor.lastrowid

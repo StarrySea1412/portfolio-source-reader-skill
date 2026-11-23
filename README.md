@@ -36,4 +36,8 @@ bash ./install.sh /path/to/skills
 - 跟单仓库分析不冲突：只有一份来源就读一份；需要时用地图把档案与原始资料连起来。
 - 不声称比其他开源工具更准。维护者可以用 [对照评测](evals/README.md) 验证：用与不用 Skill 时，结论是否更可追溯、缺证时是否更克制。
 
+## 可选：用 MCP 给模型提供证据
+
+[本地证据 MCP](mcp/README.md) 演示另一种接法：模型先列出脱敏资料，再按白名单编号读取带行号的摘录。Skill 负责约定怎么核实，MCP 负责限制可以取到哪些资料；两者都能单独使用。Skill 安装脚本不会安装或启动 MCP。
+
 [Skill 入口](SKILL.md) · [输出格式](references/star-template.md) · [安装脚本](install.sh) · [MIT 许可证](LICENSE)
