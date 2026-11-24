@@ -1,119 +1,82 @@
 # portfolio-source-reader
 
-> 给有多源项目（本地 + GitHub + Gitee + 档案）的工程师用的 agent skill：把散落的 项目信息按 STAR 挖出来，产出可直接进简历/档案/面试准备的结构化素材。
->
-> **不是**简历生成器（那是 resume-builder-skill 的事）。**是**素材采集器——回答"AI 怎么知道你到底做了什么"。
+从本地仓库、GitHub/Gitee 和历史项目档案中采集经历素材，保留来源、版本、数字口径与个人贡献依据。输出可用于简历选材、项目复盘和面试准备。
 
-## 这是什么
+## 能解决什么
 
-你做过 10+ 个项目，信息散落在：
-- 本地 `c:\project\*`（源码 + docs + git log）
-- GitHub 50 个仓库（公开 README + CI）
-- Gitee 2 个仓库
-- portfolio 14 份 case-study 档案（二手摘要）
+- 多处项目资料：先定位实际来源，再针对目标问题回查。
+- 历史数字过期：记录快照与口径，保留历史结果和当前核查的区别。
+- 项目功能与个人贡献混在一起：按具体改动核对本人、团队、上游和 AI 参与。
+- “验证通过”含义模糊：写明静态核查、测试、模拟、浏览器、部署或业务验收的实际范围。
 
-通用简历 skill 的问题是：**它不知道你的项目在哪、不知道哪些数字可信、不知道哪些该脱敏**。这个 skill 解决的就是这件事。
-
-## 核心机制
-
-1. **信息源地图（SOURCES.md）**：用户填一张表，告诉 agent"项目→本地路径/git/公开仓库/档案/关键文档"。agent 进来先读这个。
-2. **分层核实**：先读二手档案拿摘要（快），需要细节 cd 到原始项目挖 git log / 代码 / docs（准）。
-3. **STAR 输出**：四要素（S/T/A/R）+ 难点五段（现象→定位→根因→解法→验证），三版格式（简历/档案/面试）。
-4. **铁律**：数字必须数出来、不编造、标边界（独立/协作/AI）、商业脱敏。
-
-## 与同类 skill 的区别
-
-| skill | 挖什么 | 局限 |
-|-------|--------|------|
-| resume-builder-skill | 帮用户把信息做成简历 PDF | 不知道用户项目在哪，靠用户喂内容 |
-| earino/resumasher | 从一个项目文件夹挖证据 | 单源，不支持本地+GitHub+Gitee+档案多源 |
-| **本 skill** | **多源信息地图 + 分层核实** | **需要用户先填 SOURCES.md** |
+单个项目也可以使用。素材准备好后，可以交给用户选定的简历排版或文档工具；本 skill 的交付重点是内容及依据。
 
 ## 安装
 
-### 方式 1：直接 clone 到 skills 目录
+安装到所用 agent 的 skills 目录，目录名使用 `portfolio-source-reader`。以 Codex 常用的本地目录为例：
 
 ```bash
-git clone https://github.com/<your-name>/portfolio-source-reader-skill.git ~/.zcode/skills/portfolio-source-reader
-# 或 ~/.codex/skills/、~/.claude/skills/（看你的 agent）
+git clone https://github.com/StarrySea1412/portfolio-source-reader-skill.git ~/.codex/skills/portfolio-source-reader
 ```
 
-### 方式 2：作为参考文档
+PowerShell：
 
-直接把 `SKILL.md` 和 `references/` 放进你的项目，agent 读 `SKILL.md` 时按里面的工作流走。
+```powershell
+git clone https://github.com/StarrySea1412/portfolio-source-reader-skill.git "$env:USERPROFILE/.codex/skills/portfolio-source-reader"
+```
+
+Linux 或 Git Bash 下，已有源码副本时，也可从任意工作目录运行 `bash /path/to/install.sh <skills目录>`；例如指定 `~/.codex/skills`。安装器从自身目录取完整运行时包，现有目标默认保留；默认 `~/.zcode/skills` 作为旧入口兼容。README、验收记录和测试留在源码仓库。
+
+也可以把完整 skill 目录放入项目，让 agent 按 [SKILL.md](SKILL.md) 工作。保留 references、assets 和 scripts 的相对目录。
 
 ## 使用
 
-### 第 1 步：填信息源地图
+可以直接给路径和问题：
 
-复制 `references/sources-map-template.md` 到你的 portfolio 仓库根目录，命名为 `SOURCES.md`，按模板填：
+> 按 portfolio-source-reader，分析这个项目的并发保存修复。只看这个项目，给面试讲述和证据附注。
 
-```markdown
-### hermes-watch（全栈 AI 巡检平台）
-- 本地路径：`c:\project\hermes-watch`
-- Git：69 commits，最后 2026-09-16
-- 公开仓库：https://github.com/you/hermes-watch
-- 档案：`projects/hermes-watch/case-study.md`
-- 关键文档：`backend/app/`、`docs/LLM.md`、`backend/run_tests.py`
-- 挖什么：并发轮换行锁 / 跳板连接池 / metrics 降采样 / 审批制执行
-- ⚠️ 脱敏：否
+也可以给目标方向：
+
+> 用我仓库里的 SOURCES.md，为 Python 后端岗位选材。优先挑能讲清本人改动和验证结果的项目。
+
+有地图就沿入口采集；没有地图先从已授权目录发现信息，只询问影响定位或表述的缺口。需要长期维护时，再用 [地图模板](references/sources-map-template.md) 保存实际入口。[虚构示例地图](assets/sources-map.example.md) 展示填法。
+
+可选的只读发现助手需要 Python 3.10+，只依赖标准库；git 可用时会补充本地仓库元数据：
+
+```text
+python scripts/discover_sources.py --root <项目路径> --format json
+python scripts/discover_sources.py --root <多个项目的父目录> --scan-children --max-repos 40 --format markdown
 ```
 
-填好 `assets/sources-map.example.md` 是填好的样例，可参考。
+默认检查一个目录；批量只看直属目录并设上限。助手读取入口与 git 元数据，输出待核查草稿；它不判断仓库公开性、个人责任或测试结果。没有 Python 时，agent 也可直接按采集协议工作。
 
-### 第 2 步：触发
+## 输出带什么
 
-对 agent 说：
-- "按 portfolio-source-reader skill 帮我挖 identity-service 的难点"
-- "帮我写简历，主攻后端"
-- "分析我的项目，准备面试"
+正文按需要采用 [简历、档案或面试格式](references/star-template.md)。重要结论保留一张简短证据卡：
 
-agent 会自动：
-1. 读 `SOURCES.md` 找项目
-2. 读 `projects/index.md` 拿概览
-3. 按优先级挖（档案→git log→代码→docs）
-4. 按 STAR 输出（简历/档案/面试三选一）
-
-### 第 3 步：输出
-
-agent 产出的素材可直接喂给 resume-builder-skill 或其他简历工具，或自己手改成简历。
-
-## 目录
-
-```
-portfolio-source-reader-skill/
-├── SKILL.md                         # skill 主文件（agent 入口）
-├── README.md                        # 本文件
-├── LICENSE                          # MIT
-├── references/
-│   ├── sources-map-template.md      # 空白信息源地图模板
-│   ├── star-template.md             # STAR 输出模板（三版）
-│   └── examples.md                  # 3 个挖好的样例（已脱敏）
-└── assets/
-    └── sources-map.example.md       # 填好的信息源地图示例
+```text
+主张与状态 → 来源 → 版本/日期 → 口径/条件 → 验证 → 本人贡献 → 未覆盖与披露
 ```
 
-## 设计哲学
+例如源码可以支持同一跳板、N 台目标主机的握手操作次数推导；没有延迟基准时，素材就停在这个结论。[示例](references/examples.md) 展示了这种边界，也说明如何处理只有历史档案或 fork 的情况。
 
-1. **事实 > 形容词**：数字必须数出来，不能编。"235 项测试"比"大量测试"值钱。
-2. **分层核实**：档案是摘要，源码是事实源。摘要快、源码准，各司其职。
-3. **诚实边界**：独立/协作/AI 辅助必须标注，这是信任基础。
-4. **脱敏默认**：商业项目默认不写客户/域名/产品名。
-5. **不替代简历工具**：这个 skill 挖素材，resume-builder-skill 排版——分工明确。
+## 文件
 
-## 适用场景
+- [SKILL.md](SKILL.md)：agent 入口与采集流程。
+- [证据规则](references/evidence-rules.md)：材料强度、数字口径、责任与冲突处理。
+- [STAR 模板](references/star-template.md)：三种交付格式及证据卡。
+- [地图模板](references/sources-map-template.md) 与 [示例地图](assets/sources-map.example.md)：首次建图和迁移入口。
+- [示例](references/examples.md)：有证据的表述与缺口处理。
+- [发现助手](scripts/discover_sources.py)：可选的本地只读定位。
 
-- 有多源项目的工程师（本地 + GitHub + Gitee + 档案）
-- 项目做完没时间写档案，需要 agent 帮挖
-- 准备面试，需要把项目难点系统梳理
-- 写简历，需要带数字的事实弹药
+## 验证
 
-## 不适用
+```text
+python -m unittest discover -s tests -v
+```
 
-- 单个项目、信息集中（直接用简历工具即可）
-- 与本人项目无关的代码分析
-- 一般性写作
+发现与安装测试使用隔离临时目录，检查读取范围、源项目不被修改、git 状态与 remote 脱敏，以及安装完整性与已有目标不被覆盖。行为验证另用真实请求检查素材是否保留证据和贡献边界；具体记录见 [本次验收](ACCEPTANCE.md)。
 
 ## License
 
-MIT
+[MIT](LICENSE)
